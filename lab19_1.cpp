@@ -20,20 +20,59 @@ string toUpperStr(string x){
     return y;
 }
 
-void importDataFromFile(){
-
+void importDataFromFile(string filename, vector<string> &names, vector<int> &scores, vector<char> &grades){
+    ifstream source(filename.c_str());
+    string line;
+    char format[] = "%[^:]: %d %d %d";
+    while(getline(source, line)){
+        const char *text = line.c_str();
+        char name[100];
+        int score1, score2, score3;
+        sscanf(text, format, &name, &score1, &score2, &score3);
+        names.push_back(name);
+        scores.push_back(score1+score2+score3);
+        grades.push_back(score2grade(score1+score2+score3));
+    }
 }
 
-void getCommand(){
-
+void getCommand(string &command, string &key){
+    string line;
+    cout << "Please input your command: ";
+    getline(cin, line);
+    int end_command = line.find_first_of(" ");
+    command = line.substr(0, end_command);
+    key = line.substr(end_command+1, line.length());
 }
 
-void searchName(){
-
+void searchName(vector<string> names, vector<int> scores, vector<char> grades, string key){
+    cout << "---------------------------------" << endl;
+    bool flag = false;
+    for(unsigned int i=0; i < names.size(); i++){
+        if(toUpperStr(names[i]) == key){
+            flag = true;
+            cout << names[i] << "'s score = " << scores[i] << endl;
+            cout << names[i] << "'s grade = " << grades[i] << endl;
+        }
+    }
+    if(flag == false) cout << "Cannot found." << endl;
+    cout << "---------------------------------" << endl;
 }
 
-void searchGrade(){
-
+void searchGrade(vector<string> names, vector<int> scores, vector<char> grades, string key){
+    cout << "---------------------------------" << endl;
+    bool flag = false;
+    int key_length = key.length();
+    char *char_key = new char[key_length];
+    for(int i=0; i < key_length; i++) char_key[i] = key[i];
+    for(unsigned int i=0; i < grades.size(); i++){
+        if(grades[i] == *char_key){
+            flag = true;
+            cout << names[i] << " (" << scores[i] << ")" << endl;
+        }
+    }
+    if(flag == false) cout << "Cannot found." << endl;
+    cout << "---------------------------------" << endl;
+    delete [] char_key;
 }
 
 
